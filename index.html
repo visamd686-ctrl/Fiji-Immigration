@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permit / Exemption Validation — Ministry of Immigration – Fiji</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7f8;
+    color: #333;
+}
+.top-line {
+    height: 5px;
+    background: #2486d1;
+}
+header {
+    background: #fff;
+    min-height: 100px;
+    padding: 15px 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 1px solid #e5e9ef;
+}
+.logo {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #d0d7de;
+}
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.header-title {
+    border-left: 2px solid #17254e;
+    padding-left: 18px;
+    color: #101d48;
+    font-size: 25px;
+    font-weight: bold;
+}
+.banner {
+    background: #101c49;
+    color: white;
+    text-align: center;
+    padding: 28px 15px;
+}
+.banner h1 {
+    font-size: 27px;
+    margin-bottom: 12px;
+}
+.banner p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+.main {
+    max-width: 1200px;
+    margin: 34px auto;
+    padding: 0 22px;
+    display: grid;
+    grid-template-columns: 0.85fr 1.05fr;
+    gap: 30px;
+    align-items: start;
+}
+.form-card,
+.details-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e4e8ec;
+    box-shadow: 0 3px 15px rgba(0,0,0,.06);
+}
+.form-card {
+    padding: 32px 28px;
+}
+.form-group {
+    margin-bottom: 28px;
+}
+.form-group label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+.required {
+    color: #e74c3c;
+}
+.input-wrap {
+    position: relative;
+}
+.input-wrap input {
+    width: 100%;
+    height: 48px;
+    padding: 12px 42px 12px 15px;
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    background: #f2f4f8;
+    font-size: 16px;
+}
+.clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    font-size: 21px;
+    color: #555;
+    cursor: pointer;
+    display: none;
+}
+.clear-btn.visible {
+    display: block;
+}
+.verify-btn {
+    display: block;
+    margin: 38px auto 0;
+    width: 160px;
+    padding: 14px;
+    border: none;
+    border-radius: 40px;
+    background: #101c49;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.verify-btn:disabled {
+    opacity: .6;
+}
+.details-card {
+    overflow: hidden;
+}
+.details-header {
+    background: #101c49;
+    color: white;
+    padding: 20px 24px;
+    font-size: 21px;
+    font-weight: bold;
+}
+.details-body {
+    padding: 22px;
+}
+.status-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.status-box {
+    border: 2px solid #dce2e6;
+    border-radius: 19px;
+    padding: 15px 17px;
+    background: white;
+    min-width: 0;
+    transition: .2s;
+}
+.status-box .label {
+    color: #6b7a8d;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+.status-box .value {
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+/* VALID - Green like official site */
+.status-box.valid {
+    background: #effcf4;
+    border: 2px solid #91e9b6;
+}
+.status-box.valid .value {
+    color: #167543;
+}
+/* INVALID / NOT FOUND - Red */
+.status-box.invalid {
+    background: #fff1f0;
+    border: 2px solid #f2aaa5;
+}
+.status-box.invalid .value {
+    color: #c0392b;
+}
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid #edf0f3;
+    font-size: 15px;
+}
+.detail-row:last-child {
+    border-bottom: none;
+}
+.detail-row .label {
+    color: #687580;
+}
+.detail-row .value {
+    font-weight: bold;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+.msg {
+    display: none;
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+}
+.msg.success {
+    display: block;
+    color: #167543;
+}
+.msg.error {
+    display: block;
+    color: #c0392b;
+}
+.footer-note {
+    text-align: center;
+    padding: 25px;
+    color: #777;
+    font-size: 13px;
+}
+@media(max-width:750px) {
+    header {
+        padding: 12px 16px;
+    }
+    .header-title {
+        font-size: 18px;
+    }
+    .logo {
+        width: 52px;
+        height: 52px;
+    }
+    .banner h1 {
+        font-size: 23px;
+    }
+    .main {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin: 25px auto;
+        padding: 0 16px;
+    }
+    .form-card {
+        padding: 28px 25px;
+    }
+    .details-body {
+        padding: 18px;
+    }
+    .status-row {
+        gap: 10px;
+    }
+    .status-box {
+        padding: 13px 12px;
+    }
+    .status-box .value {
+        font-size: 15px;
+    }
+    .detail-row {
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="top-line"></div>
+
+<header>
+    <div class="logo">
+        <img src="logo.png" alt="Fiji Immigration Logo">
+    </div>
+    <div class="header-title">
+        Ministry of Immigration – Fiji
+    </div>
+</header>
+
+<div class="banner">
+    <h1>Permit / Exemption Validation</h1>
+    <p>Please provide your Passport Number and Permit/Exemption No to verify.</p>
+</div>
+
+<div class="main">
+    <div class="form-card">
+        <div class="form-group">
+            <label>
+                Passport No <span class="required">*</span>
+            </label>
+            <div class="input-wrap">
+                <input type="text" id="passportNo" autocomplete="off">
+                <button class="clear-btn" id="clearPassport" onclick="clearField('passportNo')">×</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                Permit / Exemption No <span class="required">*</span>
+            </label>
+            <div class="input-wrap">
+                <input type="text" id="permitNo" autocomplete="off">
+                <button class="clear-btn" id="clearPermit" onclick="clearField('permitNo')">×</button>
+            </div>
+        </div>
+        <button class="verify-btn" id="verifyBtn" onclick="verify()">Verify</button>
+        <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="details-card">
+        <div class="details-header">Primary Applicant Details</div>
+        <div class="details-body">
+            <div class="status-row">
+                <div class="status-box" id="statusBox">
+                    <div class="label">STATUS</div>
+                    <div class="value" id="status">--</div>
+                </div>
+                <div class="status-box" id="validityBox">
+                    <div class="label">VALIDITY DATE</div>
+                    <div class="value" id="validity">--</div>
+                </div>
+            </div>
+            <div class="detail-row">
+                <span class="label">Applicant Name :</span>
+                <span class="value" id="applicantName">--</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Permit No / Permit Type :</span>
+                <span class="value" id="permitType">-- / --</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Passport No :</span>
+                <span class="value" id="passportDisplay">--</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-note">
+    Ministry of Immigration — Republic of Fiji
+</div>
+
+<script>
+const passportInput = document.getElementById('passportNo');
+const permitInput = document.getElementById('permitNo');
+
+passportInput.addEventListener('input', () => {
+    document.getElementById('clearPassport').classList.toggle('visible', passportInput.value.length > 0);
+});
+permitInput.addEventListener('input', () => {
+    document.getElementById('clearPermit').classList.toggle('visible', permitInput.value.length > 0);
+});
+
+function clearField(id) {
+    document.getElementById(id).value = '';
+    document.getElementById(id === 'passportNo' ? 'clearPassport' : 'clearPermit').classList.remove('visible');
+    document.getElementById(id).focus();
+}
+
+const demoData = {
+    "A22839649": {
+        permit: "PWDS2417480",
+        status: "VALID",
+        validity: "16 OCT 2027 - 15 OCT 2028",
+        name: "FAKIR MONIRUJJAMAN",
+        type: "Work Permit"
+    },
+    "A08958078": {
+        permit: "PWDS2417481",
+        status: "VALID",
+        validity: "16 OCT 2027 - 15 OCT 2028",
+        name: "RASHED HOSSEN",
+        type: "Visitor Permit"
+    },
+    "A17246939": {
+        permit: "PWDS2417476",
+        status: "VALID",
+        validity: "16 OCT 2027 - 15 OCT 2028",
+        name: "MD RUBEL MIAH RAFIK",
+        type: "Work Permit"
+    }
+};
+
+function resetDetails() {
+    document.getElementById('status').textContent = '--';
+    document.getElementById('validity').textContent = '--';
+    document.getElementById('applicantName').textContent = '--';
+    document.getElementById('permitType').textContent = '-- / --';
+    document.getElementById('passportDisplay').textContent = '--';
+    document.getElementById('statusBox').className = 'status-box';
+    document.getElementById('validityBox').className = 'status-box';
+}
+
+function verify() {
+    const passport = passportInput.value.trim().toUpperCase();
+    const permit = permitInput.value.trim().toUpperCase();
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('verifyBtn');
+
+    msg.className = 'msg';
+    msg.textContent = '';
+
+    if (!passport || !permit) {
+        msg.className = 'msg error';
+        msg.textContent = 'Please enter both numbers.';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Verifying...';
+    resetDetails();
+
+    setTimeout(() => {
+        const data = demoData[passport];
+        const statusBox = document.getElementById('statusBox');
+        const validityBox = document.getElementById('validityBox');
+        const status = document.getElementById('status');
+        const validity = document.getElementById('validity');
+
+        if (data && data.permit === permit) {
+            // Valid case → Green color
+            statusBox.className = 'status-box valid';
+            validityBox.className = 'status-box valid';
+
+            status.textContent = 'Valid';
+            validity.textContent = data.validity;
+
+            document.getElementById('applicantName').textContent = data.name;
+            document.getElementById('permitType').textContent = data.permit + ' / ' + data.type;
+            document.getElementById('passportDisplay').textContent = passport;
+
+            msg.className = 'msg success';
+            msg.textContent = 'Verification successful.';
+        } else {
+            // Not found → Red color
+            statusBox.className = 'status-box invalid';
+            validityBox.className = 'status-box invalid';
+
+            status.textContent = 'NOT FOUND';
+            validity.textContent = '--';
+
+            document.getElementById('applicantName').textContent = '--';
+            document.getElementById('permitType').textContent = '-- / --';
+            document.getElementById('passportDisplay').textContent = '--';
+
+            msg.className = 'msg error';
+            msg.textContent = 'No matching record found.';
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Verify';
+    }, 700);
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') verify();
+});
+</script>
+</body>
+</html>
